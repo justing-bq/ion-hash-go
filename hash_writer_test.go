@@ -199,7 +199,7 @@ func TestWriteScalars(t *testing.T) {
 			assert.NoError(t, ionHashWriter.WriteDecimal(dec),
 				"Something went wrong executing ionHashWriter.WriteDecimal(dec)")
 		case ion.TimestampType:
-			assert.NoError(t, ionHashWriter.WriteTimestamp(test.value.(time.Time)),
+			assert.NoError(t, ionHashWriter.WriteTimestamp(test.value.(ion.Timestamp)),
 				"Something went wrong executing ionHashWriter.WriteTimestamp(time.Date(...))")
 		case ion.SymbolType:
 			assert.NoErrorf(t, ionHashWriter.WriteSymbol(test.value.(string)),
