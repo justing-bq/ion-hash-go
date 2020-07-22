@@ -61,7 +61,7 @@ func (baseSerializer *baseSerializer) stepIn(ionValue hashValue) error {
 	}
 
 	tq := typeQualifier(ionValue)
-	if ionValue.isNull() {
+	if ionValue.IsNull() {
 		tq = tq | 0x0F
 	}
 
@@ -74,7 +74,9 @@ func (baseSerializer *baseSerializer) stepIn(ionValue hashValue) error {
 }
 
 func (baseSerializer *baseSerializer) sum(b []byte) []byte {
-	return baseSerializer.hashFunction.Sum(b)
+	hash := baseSerializer.hashFunction.Sum(b)
+	baseSerializer.hashFunction.Reset()
+	return hash
 }
 
 func (baseSerializer *baseSerializer) handleFieldName(ionValue hashValue) error {
@@ -83,7 +85,9 @@ func (baseSerializer *baseSerializer) handleFieldName(ionValue hashValue) error 
 
 		// TODO: Add logic returning UnknownSymbolError once SymbolToken is available
 
-		return baseSerializer.writeSymbol(fieldName)
+		if fieldName != nil {
+			return baseSerializer.writeSymbol(*fieldName)
+		}
 	}
 
 	return nil
@@ -385,7 +389,7 @@ func serializers(ionType ion.Type, ionValue interface{}, writer ion.Writer) erro
 }
 
 func typeQualifier(ionValue hashValue) byte {
-	typeCode := byte(ionValue.ionType())
+	typeCode := byte(ionValue.Type())
 	return typeCode << 4
 }
 
